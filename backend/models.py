@@ -22,13 +22,20 @@ class User(Base):
     id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
     )
-    email: Mapped[str] = mapped_column(String, unique=True, nullable=False, index=True)
+    user_id_original: Mapped[str | None] = mapped_column(String, unique=True, nullable=True)
+    email: Mapped[str | None] = mapped_column(String, unique=True, nullable=True, index=True)
     password_hash: Mapped[str] = mapped_column(String, nullable=False)
-    resume_text: Mapped[str | None] = mapped_column(Text, nullable=True)
-    resume_embedding: Mapped[list | None] = mapped_column(JSON, nullable=True)
-    resume_file_url: Mapped[str | None] = mapped_column(String, nullable=True)
+    full_name: Mapped[str | None] = mapped_column(String, nullable=True)
+    job_title: Mapped[str | None] = mapped_column(String, nullable=True)
+    skills_text: Mapped[str | None] = mapped_column(Text, nullable=True)
+    skills_embedding: Mapped[list | None] = mapped_column(JSON, nullable=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime, default=lambda: datetime.now(timezone.utc)
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime,
+        default=lambda: datetime.now(timezone.utc),
+        onupdate=lambda: datetime.now(timezone.utc),
     )
 
     liked_jobs: Mapped[list["LikedJob"]] = relationship(back_populates="user")

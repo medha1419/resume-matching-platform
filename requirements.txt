@@ -7,7 +7,6 @@ pdfplumber
 fastapi
 uvicorn[standard]
 python-jose[cryptography]
-passlib[bcrypt]
 psycopg2-binary
 python-multipart
 numpy
