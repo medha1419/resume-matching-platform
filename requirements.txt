@@ -1,0 +1,15 @@
+pandas
+beautifulsoup4
+openpyxl
+sentence-transformers
+faiss-cpu
+pdfplumber
+fastapi
+uvicorn[standard]
+python-jose[cryptography]
+passlib[bcrypt]
+psycopg2-binary
+python-multipart
+numpy
+python-dotenv
+bcrypt
