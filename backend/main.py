@@ -269,7 +269,7 @@ def search_jobs_public(payload: PublicSearchRequest, db: Session = Depends(get_d
                 "salary_min": job.salary_min,
                 "salary_max": job.salary_max,
                 "currency": job.currency,
-                "match_score": min(round((score_by_position[job.faiss_index] / 0.45) * 100), 99),
+                "match_score": min(round((score_by_position[job.faiss_index] / 0.58) * 88), 99),
             }
         )
 
