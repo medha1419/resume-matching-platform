@@ -67,6 +67,13 @@ class SearchRequest(BaseModel):
     salary_max: int | None = None
 
 
+class PublicSearchRequest(BaseModel):
+    skills_text: str
+    location: str | None = None
+    salary_min: int | None = None
+    salary_max: int | None = None
+
+
 # ── Auth endpoints ───────────────────────────────────────────────────
 
 
@@ -213,6 +220,55 @@ def search_jobs(
                 "currency": job.currency,
                 "match_score": score_by_position[job.faiss_index],
                 "is_liked": job.id in liked_job_ids,
+            }
+        )
+
+    results.sort(key=lambda r: r["match_score"], reverse=True)
+    return results[:15]
+
+
+@app.post("/search/public")
+def search_jobs_public(payload: PublicSearchRequest, db: Session = Depends(get_db)):
+    query_vector = np.array([embed_text(payload.skills_text)], dtype="float32")
+    faiss.normalize_L2(query_vector)
+
+    top_k = 50
+    scores, indices = faiss_index.search(query_vector, top_k)
+    scores = scores[0]
+    indices = indices[0]
+
+    score_by_position = {
+        int(idx): float(score) for idx, score in zip(indices, scores) if idx != -1
+    }
+
+    jobs = (
+        db.query(Job)
+        .filter(Job.faiss_index.in_(score_by_position.keys()))
+        .all()
+    )
+
+    results = []
+    for job in jobs:
+        if payload.location:
+            if not job.location or payload.location.lower() not in job.location.lower():
+                continue
+        if payload.salary_min is not None:
+            if job.salary_max is not None and job.salary_max < payload.salary_min:
+                continue
+        if payload.salary_max is not None:
+            if job.salary_min is not None and job.salary_min > payload.salary_max:
+                continue
+
+        results.append(
+            {
+                "id": str(job.id),
+                "job_id": job.job_id,
+                "job_title": job.job_title,
+                "location": job.location,
+                "salary_min": job.salary_min,
+                "salary_max": job.salary_max,
+                "currency": job.currency,
+                "match_score": round(score_by_position[job.faiss_index] * 100),
             }
         )
 
