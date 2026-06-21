@@ -1,8 +1,10 @@
 import axios from 'axios';
 import { Job } from './types';
 
+const API_BASE = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+
 const api = axios.create({
-  baseURL: process.env.REACT_APP_API_URL || 'http://localhost:8000',
+  baseURL: API_BASE,
 });
 
 export interface SearchPublicParams {
