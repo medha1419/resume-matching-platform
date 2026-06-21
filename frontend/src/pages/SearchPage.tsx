@@ -57,7 +57,7 @@ const SearchPage: React.FC = () => {
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          overflow: 'hidden',
+          overflow: 'visible',
         }}
       >
         <div
@@ -135,7 +135,7 @@ const SearchPage: React.FC = () => {
                 resize: 'none',
                 outline: 'none',
                 fontFamily: 'var(--font-sans)',
-                color: 'var(--dark)',
+                color: '#1A1A14',
               }}
               onFocus={(e) => (e.currentTarget.style.borderColor = '#C4A882')}
               onBlur={(e) => (e.currentTarget.style.borderColor = 'var(--border)')}
@@ -187,14 +187,15 @@ const SearchPage: React.FC = () => {
                 <div
                   style={{
                     position: 'absolute',
-                    top: 'calc(100% + 10px)',
-                    left: 0,
+                    top: 'calc(100% + 8px)',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
                     width: '320px',
                     background: 'var(--white)',
                     borderRadius: '16px',
                     padding: '20px',
                     boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
-                    zIndex: 10,
+                    zIndex: 100,
                     textAlign: 'left',
                   }}
                 >

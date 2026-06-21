@@ -31,6 +31,11 @@ input, textarea {
   font-family: var(--font-sans);
 }
 
+textarea::selection {
+  background: rgba(244, 168, 105, 0.3);
+  color: #1A1A14;
+}
+
 a {
   text-decoration: none;
   color: inherit;
@@ -55,6 +60,6 @@ a {
 }
 
 ::selection {
-  background: var(--blue);
-  color: var(--white);
+  background: rgba(244, 168, 105, 0.3);
+  color: #1A1A14;
 }
