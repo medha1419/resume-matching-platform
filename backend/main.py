@@ -16,6 +16,7 @@ from auth import create_jwt_token, get_current_user, hash_password, verify_passw
 from database import engine, get_db
 from embeddings import embed_text
 from models import Job, LikedJob, User
+from startup import ensure_faiss_index
 
 load_dotenv()
 
@@ -37,7 +38,7 @@ faiss_index: faiss.Index | None = None
 @app.on_event("startup")
 def load_faiss_index():
     global faiss_index
-    faiss_index = faiss.read_index(INDEX_PATH)
+    faiss_index = ensure_faiss_index()
 
 
 # ── Schemas ──────────────────────────────────────────────────────────
