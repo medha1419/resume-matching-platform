@@ -1,8 +1,9 @@
 import sys
-import uuid
-from pathlib import Path
+import os
 
-sys.path.insert(0, str(Path(__file__).resolve().parent))
+sys.path.insert(0, os.path.dirname(__file__))
+
+import uuid
 
 import faiss
 import numpy as np
