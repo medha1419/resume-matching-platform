@@ -3,10 +3,12 @@ import os
 
 sys.path.insert(0, os.path.dirname(__file__))
 
+import re
 import uuid
 
 import faiss
 import numpy as np
+from bs4 import BeautifulSoup
 from dotenv import load_dotenv
 from fastapi import Depends, FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -20,6 +22,15 @@ from models import Job, LikedJob, User
 from startup import ensure_faiss_index
 
 load_dotenv()
+
+
+def clean_input_text(text: str) -> str:
+    if not text:
+        return ""
+    soup = BeautifulSoup(text, "html.parser")
+    clean = soup.get_text(separator=" ")
+    clean = re.sub(r"\s+", " ", clean).strip()
+    return clean
 
 INDEX_PATH = "data/faiss_index.bin"
 
@@ -71,6 +82,7 @@ class SearchRequest(BaseModel):
 
 class PublicSearchRequest(BaseModel):
     skills_text: str
+    role_title: str | None = None
     location: str | None = None
     salary_min: int | None = None
     salary_max: int | None = None
@@ -231,7 +243,11 @@ def search_jobs(
 
 @app.post("/search/public")
 def search_jobs_public(payload: PublicSearchRequest, db: Session = Depends(get_db)):
-    query_vector = np.array([embed_text(payload.skills_text)], dtype="float32")
+    skills_text = clean_input_text(payload.skills_text)
+    role_title = clean_input_text(payload.role_title)
+    query_text = f"{role_title} {skills_text}".strip() if role_title else skills_text
+
+    query_vector = np.array([embed_text(query_text)], dtype="float32")
     faiss.normalize_L2(query_vector)
 
     top_k = 50
