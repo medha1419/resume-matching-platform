@@ -82,7 +82,6 @@ class SearchRequest(BaseModel):
 
 class PublicSearchRequest(BaseModel):
     skills_text: str
-    role_title: str | None = None
     location: str | None = None
     salary_min: int | None = None
     salary_max: int | None = None
@@ -244,10 +243,7 @@ def search_jobs(
 @app.post("/search/public")
 def search_jobs_public(payload: PublicSearchRequest, db: Session = Depends(get_db)):
     skills_text = clean_input_text(payload.skills_text)
-    role_title = clean_input_text(payload.role_title)
-    query_text = f"{role_title} {skills_text}".strip() if role_title else skills_text
-
-    query_vector = np.array([embed_text(query_text)], dtype="float32")
+    query_vector = np.array([embed_text(skills_text)], dtype="float32")
     faiss.normalize_L2(query_vector)
 
     top_k = 50
