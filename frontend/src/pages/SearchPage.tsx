@@ -14,6 +14,7 @@ const SKILL_PLACEHOLDERS = [
 
 const SearchPage: React.FC = () => {
   const [skillsText, setSkillsText] = useState('');
+  const [roleTitle, setRoleTitle] = useState('');
   const [location, setLocation] = useState('');
   const [salaryMin, setSalaryMin] = useState('');
   const [salaryMax, setSalaryMax] = useState('');
@@ -29,6 +30,7 @@ const SearchPage: React.FC = () => {
     try {
       const results = await searchPublic({
         skills_text: skillsText,
+        role_title: roleTitle || undefined,
         location: location || undefined,
         salary_min: salaryMin ? Number(salaryMin) : undefined,
         salary_max: salaryMax ? Number(salaryMax) : undefined,
@@ -119,6 +121,27 @@ const SearchPage: React.FC = () => {
         </div>
 
         <div style={{ position: 'relative', zIndex: 1, width: '100%', maxWidth: '680px', margin: '48px auto 0' }}>
+          <input
+            type="text"
+            value={roleTitle}
+            onChange={(e) => setRoleTitle(e.target.value)}
+            placeholder="Target role title (e.g. Senior Backend Engineer)"
+            style={{
+              width: '100%',
+              borderRadius: '16px',
+              background: 'var(--white)',
+              border: '1.5px solid var(--border)',
+              padding: '14px 20px',
+              fontSize: '15px',
+              marginBottom: '12px',
+              outline: 'none',
+              fontFamily: 'var(--font-sans)',
+              color: '#1A1A14',
+              boxShadow: '0 4px 24px rgba(0,0,0,0.06)',
+            }}
+            onFocus={(e) => (e.currentTarget.style.borderColor = '#C4A882')}
+            onBlur={(e) => (e.currentTarget.style.borderColor = 'var(--border)')}
+          />
           <div style={{ position: 'relative' }}>
             <textarea
               value={skillsText}
